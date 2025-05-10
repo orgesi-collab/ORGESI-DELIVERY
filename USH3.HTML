@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORGESI Delivery</title>
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #ff7e5f, #feb47b);
+        --primary-color: #ff7e5f;
+        --secondary-color: #ffe3cc;
+        --accent-color: #ff4e50;
+        --light-color: #fdfaf6;
+        --dark-text: #333;
+        --soft-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        --border-radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        background: var(--light-color);
+        color: var(--dark-text);
+    }
+
+    .header {
+        background: var(--primary-gradient);
+        color: white;
+        text-align: center;
+        padding: 25px 10px;
+        font-size: 32px;
+        letter-spacing: 1px;
+        box-shadow: var(--soft-shadow);
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+    }
+
+    .container {
+        width: 95%;
+        max-width: 1200px;
+        margin: auto;
+        padding: 20px 0;
+    }
+
+    .products {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    .product {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--soft-shadow);
+        padding: 15px;
+        text-align: center;
+        transition: transform 0.2s;
+    }
+
+    .product:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+
+    .product img {
+        width: 100%;
+        border-radius: var(--border-radius);
+        margin-bottom: 10px;
+    }
+
+    .product h4 {
+        margin: 10px 0 5px;
+    }
+
+    .product p {
+        margin: 5px 0;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+
+    .product button {
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: bold;
+    }
+
+    .product button:hover {
+        filter: brightness(1.1);
+        transform: scale(1.05);
+    }
+
+    .cart, .order-form {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--soft-shadow);
+        padding: 20px;
+        margin-top: 30px;
+    }
+
+    .cart h3, .order-form h3 {
+        margin-top: 0;
+        color: var(--primary-color);
+    }
+
+    #cart-items li {
+        margin: 6px 0;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--secondary-color);
+        padding: 6px 10px;
+        border-radius: 8px;
+    }
+
+    #cart-items button {
+        background: #ff4e50;
+        color: white;
+        border: none;
+        padding: 4px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.3s;
+    }
+
+    #cart-items button:hover {
+        filter: brightness(1.2);
+    }
+
+    .total {
+        font-weight: bold;
+        margin-top: 10px;
+        color: var(--primary-color);
+    }
+
+    input, button[type="submit"] {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: var(--border-radius);
+        border: 1px solid #ccc;
+        transition: all 0.3s;
+    }
+
+    input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 6px var(--primary-color);
+        outline: none;
+    }
+
+    button[type="submit"] {
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+        filter: brightness(1.1);
+    }
+
+    @media (max-width: 600px) {
+        .header { font-size: 24px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="header">ORGESI Delivery</div>
+<div class="container">
+
+    <div class="products" id="product-list"></div>
+
+    <div class="cart">
+        <h3>Shporta</h3>
+        <ul id="cart-items"></ul>
+        <div class="total" id="cart-total"></div>
+    </div>
+
+    <div class="order-form">
+        <h3>Plotëso të dhënat e porosisë</h3>
+        <input type="text" id="name" placeholder="Emri" required>
+        <input type="tel" id="phone" placeholder="Numri i telefonit" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="address" placeholder="Adresa" required>
+        <button type="submit" onclick="placeOrder()">Porosit</button>
+    </div>
+
+</div>
+
+<script>
+const products = [
+    { name: "Spicy Wings", price: 6, img: "https://via.placeholder.com/150/FF5733/FFFFFF?text=Spicy+Wings" },
+    { name: "Chicken Nuggets", price: 5, img: "https://via.placeholder.com/150/FFC300/FFFFFF?text=Chicken+Nuggets" },
+    { name: "Pomfrit", price: 3, img: "https://via.placeholder.com/150/F5CBA7/FFFFFF?text=Pomfrit" },
+    { name: "Hamburger", price: 4, img: "RedDot_Burger.jpeg" },
+    { name: "Coca Cola", price: 2, img: "https://via.placeholder.com/150/D32F2F/FFFFFF?text=Coca+Cola" },
+    { name: "Red Bull", price: 3, img: "https://via.placeholder.com/150/1976D2/FFFFFF?text=Red+Bull" },
+    { name: "Ujë", price: 1, img: "https://via.placeholder.com/150/BBDEFB/FFFFFF?text=Ujë" },
+    { name: "Lëng për fëmijë", price: 2, img: "https://via.placeholder.com/150/FF9800/FFFFFF?text=Lëng+Për+Fëmijë" },
+    { name: "Fanta", price: 2, img: "https://via.placeholder.com/150/FFA500/FFFFFF?text=Fanta" },
+    { name: "Pepsi", price: 2, img: "https://via.placeholder.com/150/0000FF/FFFFFF?text=Pepsi" },
+    { name: "Pizza", price: 7, img: "https://via.placeholder.com/150/FF5733/FFFFFF?text=Pizza" },
+    { name: "KIDS BOX", price: 5, img: "https://via.placeholder.com/150/FF5733/FFFFFF?text=KIDS+BOX" },
+];
+
+const productList = document.getElementById("product-list");
+const cartItems = document.getElementById("cart-items");
+const cartTotal = document.getElementById("cart-total");
+let cart = [];
+
+products.forEach((product, index) => {
+    const productDiv = document.createElement("div");
+    productDiv.classList.add("product");
+    productDiv.innerHTML = `
+        <img src="${product.img}" alt="${product.name}">
+        <h4>${product.name}</h4>
+        <p>Çmimi: $${product.price}</p>
+        <button onclick="addToCart(${index})">Shto në Shportë</button>
+    `;
+    productList.appendChild(productDiv);
+});
+
+function addToCart(index) {
+    cart.push(products[index]);
+    updateCart();
+}
+
+function removeFromCart(cartIndex) {
+    cart.splice(cartIndex, 1);
+    updateCart();
+}
+
+function updateCart() {
+    cartItems.innerHTML = "";
+    let total = 0;
+    cart.forEach((item, i) => {
+        const li = document.createElement("li");
+        li.innerHTML = `${item.name} - $${item.price} <button onclick="removeFromCart(${i})">Hiq</button>`;
+        cartItems.appendChild(li);
+        total += item.price;
+    });
+    cartTotal.textContent = `Totali: $${total}`;
+}
+
+function placeOrder() {
+    const name = document.getElementById("name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const address = document.getElementById("address").value.trim();
+
+    if (!name || !phone || !email || !address || cart.length === 0) {
+        alert("Ju lutem plotësoni të gjitha fushat dhe shtoni produkte në shportë!");
+        return;
+    }
+
+    const orderDetails = `
+Porosia u vendos me sukses!
+-----------------------------
+Emri: ${name}
+Tel: ${phone}
+Email: ${email}
+Adresa: ${address}
+Produkte: ${cart.map(item => item.name).join(", ")}
+Totali: $${cart.reduce((sum, item) => sum + item.price, 0)}
+`;
+
+    alert(orderDetails);
+
+    document.getElementById("name").value = "";
+    document.getElementById("phone").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("address").value = "";
+    cart = [];
+    updateCart();
+}
+</script>
+
+</body>
+</html>
